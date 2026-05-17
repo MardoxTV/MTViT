@@ -26,7 +26,7 @@ apt-get update -qq
 info "Installing system packages..."
 apt-get install -y -qq \
   nmap gobuster ffuf nikto hydra sqlmap \
-  enum4linux smbclient crackmapexec \
+  enum4linux enum4linux-ng smbclient crackmapexec \
   exploitdb metasploit-framework \
   python3 python3-pip python3-venv python3-weasyprint \
   curl wget git build-essential golang-go ruby ruby-dev \
@@ -69,9 +69,23 @@ fi
 cd "$SCRIPT_DIR"
 
 # ─── Pip extras ────────────────────────────────────────────────
-info "Installing extra Python packages..."
-pip install -q pymetasploit3 python-libnmap enum4linux-ng
-ok "Python extras installed"
+# pymetasploit3 is not in apt — install via pip into the venv.
+# python-libnmap and slowapi/python-dotenv are already in requirements.txt.
+info "Installing pymetasploit3..."
+pip install -q pymetasploit3
+ok "pymetasploit3 installed"
+
+# ─── enum4linux-ng fallback ────────────────────────────────────
+# Installed via apt above; if it failed (older distro), clone from GitHub.
+if ! command -v enum4linux-ng &>/dev/null; then
+  warn "enum4linux-ng not found via apt — trying GitHub install..."
+  git clone --depth 1 https://github.com/cddmp/enum4linux-ng.git /opt/enum4linux-ng \
+    && pip install -q -r /opt/enum4linux-ng/requirements.txt \
+    && ln -sf /opt/enum4linux-ng/enum4linux-ng.py /usr/local/bin/enum4linux-ng \
+    && chmod +x /opt/enum4linux-ng/enum4linux-ng.py \
+    && ok "enum4linux-ng installed from GitHub" \
+    || warn "enum4linux-ng install failed — SMB enumeration will fall back to enum4linux"
+fi
 
 # ─── Download loot tools ───────────────────────────────────────
 LOOT_DIR="/opt/autopwn/loot"
