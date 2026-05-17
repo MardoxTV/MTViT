@@ -1,5 +1,5 @@
 import { useParams } from 'react-router-dom'
-import { Trophy, Key, AlertTriangle, FileText, ExternalLink } from 'lucide-react'
+import { Trophy, Key, AlertTriangle, FileText } from 'lucide-react'
 import { useResults } from '../hooks/useJobs'
 import FlagBanner from '../components/FlagBanner'
 import { getPdfReport } from '../api/client'

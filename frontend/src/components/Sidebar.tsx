@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom'
-import { LayoutDashboard, Crosshair, Terminal, BarChart2, Shield, Settings } from 'lucide-react'
+import { LayoutDashboard, Crosshair, Shield, Settings } from 'lucide-react'
 import { clsx } from 'clsx'
 
 const links = [
